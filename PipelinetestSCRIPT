@@ -1,0 +1,38 @@
+pipeline {
+   agent{
+   label 'master'
+   }
+    stages {
+      stage('Build') {
+         steps {
+            // Get some code from a GitHub repository
+            git credentialsId: '1b6fdde7-2d04-4e5b-9e4f-72383aed649d', url: 				'https://github.com/SurjeetKour018/PipelineScript.git'
+            sh "bash build.sh"
+            // Run Maven on a Unix agent.
+            //sh "mvn -Dmaven.test.failure.ignore=true clean package"
+
+            // To run Maven on a Windows agent, use
+            // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+        }
+		}
+     
+      stage('Unit-Test') {
+         steps {
+            echo 'Building the JUnit Test'
+            sh "bash Unit.sh"
+         }
+      }
+      stage('Quality-Gate') {
+         steps {
+            echo 'Building the JUnit Test';
+            sh "bash Quality.sh"
+         }
+      }
+      stage('Deploy') {
+         steps {
+            echo 'Deployement';
+            sh "bash Deploy.sh"
+         }
+      }
+     
+   }
